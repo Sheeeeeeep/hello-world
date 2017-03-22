@@ -1,0 +1,147 @@
+<table  border=1  bordercolor=black style="border-collapse:collapse;" width="100%" >
+	<COLGROUP>
+		<COL width="9%">
+		<COL width="9%">
+		<COL width="6%">
+		<COL width="6%">
+		<COL width="6%">
+		<COL width="6%">
+		<%for(int i=0; i<qSize; i++) out.println("<COL width=\"6%\">");%>
+		<COL width="6%">
+		<COL width="6%">
+		<COL width="6%">
+		<COL width="6%">
+		<COL width="6%">
+		<COL width="6%">
+	</COLGROUP>
+	<tbody>
+		<tr>
+			<td rowspan=3 align="center"><%=SystemEnv.getHtmlLabelName(15390,user.getLanguage())%></td>
+			<td rowspan=3 align="center"><%=SystemEnv.getHtmlLabelName(413,user.getLanguage())%></td>
+			<td colspan="<%=10+qSize%>" align="center"><%=SystemEnv.getHtmlLabelName(20080,user.getLanguage())%></td>
+		</tr>
+		<tr>
+			<td rowspan=2 align="center"><%=SystemEnv.getHtmlLabelName(34082,user.getLanguage())%></td>
+			<td rowspan=2 align="center"><%=SystemEnv.getHtmlLabelNames("380,21551,81913,391,81914",user.getLanguage())%></td>
+			<td rowspan=2 align="center"><%=SystemEnv.getHtmlLabelNames("20081,81913,18929,81914",user.getLanguage())%></td>
+			<td rowspan=2 align="center"><%=SystemEnv.getHtmlLabelNames("20082,81913,18929,81914",user.getLanguage())%></td>
+			<%if(qSize > 0){%>
+			<td colspan="<%=qSize%>" align="center"><%=SystemEnv.getHtmlLabelNames("670,81913,1925,81914",user.getLanguage())%></td> 
+			<%}%>
+			<td colspan=2 align="center"><%=SystemEnv.getHtmlLabelNames("6151,81913,391,81914",user.getLanguage())%></td> 
+			<td rowspan=2 align="center"><%=SystemEnv.getHtmlLabelNames("20084,81913,1925,81914",user.getLanguage())%></td>
+			<td rowspan=2 align="center"><%=SystemEnv.getHtmlLabelNames("24058,81913,1925,81914",user.getLanguage())%></td>
+			<td rowspan=2 align="center"><%=SystemEnv.getHtmlLabelNames("20085,81913,18929,81914",user.getLanguage())%></td>
+			<td rowspan=2 align="center"><%=SystemEnv.getHtmlLabelNames("20086,81913,18929,81914",user.getLanguage())%></td>
+		</tr> 
+		<%
+			HrmLeaveTypeColor bean = null;
+			out.println("<tr>");
+			if(qSize > 0){
+				for(int i=0; i<qSize; i++){
+					String lName = "";
+					bean = (HrmLeaveTypeColor)qList.get(i);
+					switch(user.getLanguage()){
+					case 7:
+						lName = bean.getField007();
+						break;
+					case 8:
+						lName = bean.getField008();
+						break;
+					case 9:
+						lName = bean.getField009();
+						break;
+					}
+					out.println("<td align='center'>"+strUtil.vString(lName, bean.getField001())+"1</td>");
+				}
+			}
+			out.println("<td align='center'>"+SystemEnv.getHtmlLabelName(125804,user.getLanguage())+"2</td>");
+			out.println("<td align='center'>"+SystemEnv.getHtmlLabelName(125805,user.getLanguage())+"3</td>");
+			out.println("</tr>");
+			
+			HrmScheduleDiffManager diffManager = new HrmScheduleDiffManager();
+			List scheduleList = diffManager.getScheduleList(fromDate,toDate,subCompanyId,departmentId,resourceId);
+			Map scheduleMap=null;
+			Map scheduleRows=null;
+			Map scheduleTemp = (Map)scheduleList.get(0);
+			String dep = strUtil.vString(scheduleTemp.get("departmentName"));
+			String depp = "";
+			int rowsnum = 0;
+
+			for(int i=0; i<scheduleList.size(); i++) {
+				scheduleRows = (Map)scheduleList.get(i);
+				if(scheduleRows.get("departmentName").equals(dep)){
+					rowsnum++;
+				}
+			}
+
+			for(int i=0; i<scheduleList.size(); i++) {
+				scheduleMap = (Map)scheduleList.get(i);
+			%>
+		<tr>
+			<%
+			if(i==0){
+				if(dep.equals("集团总经办")){
+					depp = "自定义名称1";
+				}else if(dep.equals("策划部")){
+					depp = "自定义名称2";
+				}else if(dep.equals("财务部")){
+					depp = "自定义名称3";
+				}else if(dep.equals("行政部")){
+					depp = "自定义名称4";
+				}else{
+					depp = dep;
+				}
+				%>
+				<td rowspan=<%=rowsnum%>><%=depp%></td>
+				<%
+			}else if(i!=0&&!scheduleMap.get("departmentName").equals(dep)){
+				rowsnum = 0;
+				dep = strUtil.vString(scheduleMap.get("departmentName"));
+				for(int j=i; j<scheduleList.size(); j++) {
+				scheduleRows = (Map)scheduleList.get(j);
+				if(scheduleRows.get("departmentName").equals(dep)){
+					rowsnum++;
+				}
+			}
+			if(dep.equals("集团总经办")){
+					depp = "自定义名称1";
+				}else if(dep.equals("策划部")){
+					depp = "自定义名称2";
+				}else if(dep.equals("财务部")){
+					depp = "自定义名称3";
+				}else if(dep.equals("行政部")){
+					depp = "自定义名称4";
+				}else{
+					depp = dep;
+				}
+				%>
+				<td rowspan=<%=rowsnum%>><%=depp%></td>
+				<%
+			}else{
+			
+			}
+			%>
+			<td><%=strUtil.vString(scheduleMap.get("resourceName"))%></td>
+			<td align="right"><%=strUtil.vString(scheduleMap.get("workDays"))%></td>
+			<td align="right"><%=strUtil.vString(scheduleMap.get("workHours"))%></td>
+			<td align="right"><%=strUtil.vString(scheduleMap.get("beLate"))%></td>
+			<td align="right"><%=strUtil.vString(scheduleMap.get("leaveEarly"))%></td>
+			<%
+				for(int j=0; j<qSize; j++){
+					bean = (HrmLeaveTypeColor)qList.get(j);
+					out.println("<td align='right'>"+strUtil.vString(scheduleMap.get("leave"+bean.getField004()))+"</td>");
+				}
+			%>
+			<td align="right"><%=strUtil.vString(scheduleMap.get("overTimes0"))%></td>
+			<td align="right"><%=strUtil.vString(scheduleMap.get("overTimes1"))%></td>
+			<td align="right"><%=strUtil.vString(scheduleMap.get("evection"))%></td>
+			<td align="right"><%=strUtil.vString(scheduleMap.get("outDays"))%></td>
+			<td align="right"><%=strUtil.vString(scheduleMap.get("absentFromWork"))%></td>
+			<td align="right"><%=strUtil.vString(scheduleMap.get("noSign"))%></td>
+		</tr>
+		<%    
+			}
+		%>
+	</tbody>
+</table>
